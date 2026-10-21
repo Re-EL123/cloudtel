@@ -1,0 +1,187 @@
+/* ==========================================================================
+   CloudTel design tokens — the single source of colour, type, spacing.
+   Never hard-code colours elsewhere (see AGENTS.md §1).
+   Light theme is the default on :root; dark theme lives in themes.css.
+   ========================================================================== */
+
+:root {
+  /* Brand / primary */
+  --color-primary: #38bdf8;
+  --color-primary-hover: #0ea5e9;
+  --color-primary-deep: #0284c7;
+  --color-primary-light: #e0f2fe;
+  --color-primary-pale: #f0f9ff;
+
+  /* Surfaces */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f1f5f9;
+  --color-surface-raised: #ffffff;
+
+  /* Text */
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-text-inverse: #f8fafc;
+
+  /* Lines */
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* Status */
+  --color-success: #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fee2e2;
+  --color-info: #0284c7;
+  --color-info-soft: #e0f2fe;
+  --color-on-primary: #062637;
+
+  /* Call status (never colour-only: pair with labels/icons) */
+  --color-call-active: #16a34a;
+  --color-call-incoming: #0284c7;
+  --color-call-outgoing: #0ea5e9;
+  --color-call-ended: #64748b;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.875rem; /* 14px */
+  --text-md: 0.9375rem;  /* 15px */
+  --text-lg: 1rem;       /* 16px */
+  --text-xl: 1.125rem;   /* 18px */
+  --text-2xl: 1.25rem;   /* 20px */
+  --text-page: clamp(1.5rem, 1.2rem + 1vw, 1.875rem); /* 24–30px */
+  --text-dial: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem); /* 28–36px */
+  --text-timer: clamp(1.5rem, 1.2rem + 1vw, 2rem);      /* 24–32px */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spacing (4px scale) */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Radii */
+  --radius-card: 14px;
+  --radius-button: 10px;
+  --radius-input: 9px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Controls */
+  --control-height: 42px;
+  --control-height-sm: 32px;
+  --control-height-lg: 48px;
+  --call-control-size: 56px;
+  --tap-target: 44px;
+  --sidebar-width: 232px;
+  --sidebar-width-compact: 64px;
+  --header-height: 56px;
+  --statusbar-height: 36px;
+  --context-panel-width: 320px;
+
+  /* Elevation — subtle; borders do the primary separation */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(56, 189, 248, 0.35);
+
+  /* Motion — 150–250ms */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout z-index scale */
+  --z-sidebar: 20;
+  --z-header: 30;
+  --z-drawer: 40;
+  --z-overlay: 50;
+  --z-dialog: 60;
+  --z-toast: 70;
+
+  color-scheme: light;
+}
+
+/* Dark theme overrides — same identity, darker surfaces (spec §3.1). */
+[data-theme="dark"] {
+  --color-primary: #38bdf8;
+  --color-primary-hover: #7dd3fc;
+  --color-primary-deep: #0284c7;
+  --color-primary-light: #0c4a6e;
+  --color-primary-pale: #082f49;
+
+  --color-bg: #0b1220;
+  --color-surface: #111827;
+  --color-surface-secondary: #1e293b;
+  --color-surface-raised: #1e293b;
+
+  --color-text: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #0f172a;
+
+  --color-border: #334155;
+  --color-border-strong: #475569;
+
+  --color-success-soft: #14532d;
+  --color-warning-soft: #78350f;
+  --color-danger-soft: #7f1d1d;
+  --color-info-soft: #0c4a6e;
+  --color-on-primary: #062637;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
+/* Respect the OS preference until the user chooses explicitly. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-primary-hover: #7dd3fc;
+    --color-primary-light: #0c4a6e;
+    --color-primary-pale: #082f49;
+
+    --color-bg: #0b1220;
+    --color-surface: #111827;
+    --color-surface-secondary: #1e293b;
+    --color-surface-raised: #1e293b;
+
+    --color-text: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+    --color-text-inverse: #0f172a;
+
+    --color-border: #334155;
+    --color-border-strong: #475569;
+
+    --color-success-soft: #14532d;
+    --color-warning-soft: #78350f;
+    --color-danger-soft: #7f1d1d;
+    --color-info-soft: #0c4a6e;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+    color-scheme: dark;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@cloudtel/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CloudTel serverless API (exactly 12 Vercel functions - see AGENTS.md §2)",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint api lib",
+    "dev": "vercel dev --listen 3001"
+  },
+  "dependencies": {
+    "@cloudtel/shared": "*",
+    "pg": "^8.13.1"
+  }
+}

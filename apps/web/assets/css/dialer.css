@@ -1,0 +1,433 @@
+/* ==========================================================================
+   Dialer and active-call surfaces.
+   ========================================================================== */
+
+.dialer-layout {
+  display: grid;
+  grid-template-columns: 1fr var(--context-panel-width);
+  height: 100%;
+  overflow: hidden;
+}
+
+.dialer-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+/* Registration banner ----------------------------------------------------- */
+
+.registration-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.registration-banner.is-connected {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.registration-banner.is-registering {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.registration-banner.is-error,
+.registration-banner.is-unregistered {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.registration-banner .status-dot {
+  background: currentColor;
+}
+
+/* Dial display ------------------------------------------------------------ */
+
+.dial-display {
+  width: 100%;
+  max-width: 420px;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.dial-number-input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-size: var(--text-dial);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+}
+
+.dial-number-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.dial-number-input::placeholder {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-regular);
+}
+
+.dial-match {
+  min-height: 22px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.dial-match strong {
+  color: var(--color-text-secondary);
+}
+
+/* Keypad ------------------------------------------------------------------ */
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 76px);
+  gap: var(--space-3);
+}
+
+.keypad-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 64px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  transition: background var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+  user-select: none;
+}
+
+.keypad-key:hover {
+  background: var(--color-surface-secondary);
+}
+
+.keypad-key:active,
+.keypad-key.is-pressed {
+  transform: scale(0.96);
+  background: var(--color-primary-light);
+}
+
+.keypad-digit {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+}
+
+.keypad-letters {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+}
+
+/* Dial actions ------------------------------------------------------------ */
+
+.dial-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.dial-call-btn {
+  width: var(--call-control-size);
+  height: var(--call-control-size);
+  border-radius: var(--radius-circle);
+  background: var(--color-success);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: filter var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+}
+
+.dial-call-btn:hover {
+  filter: brightness(1.08);
+}
+
+.dial-call-btn:active {
+  transform: scale(0.96);
+}
+
+.dial-call-btn:disabled {
+  background: var(--color-border-strong);
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.dial-call-btn svg {
+  width: 26px;
+  height: 26px;
+}
+
+.dial-side-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-circle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+}
+
+.dial-side-btn:hover {
+  background: var(--color-surface-secondary);
+  color: var(--color-text);
+}
+
+.dial-side-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Active call panel ------------------------------------------------------- */
+
+.call-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.call-panel-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.call-panel-status.is-ringing {
+  color: var(--color-call-incoming);
+}
+
+.call-panel-status.is-active {
+  color: var(--color-call-active);
+}
+
+.call-panel-status.is-ended {
+  color: var(--color-call-ended);
+}
+
+.call-panel-peer {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.call-panel-number {
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+}
+
+.call-panel-timer {
+  font-size: var(--text-timer);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.call-panel-quality {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* Call controls row ------------------------------------------------------- */
+
+.call-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.call-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.call-control-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-circle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.call-control-btn:hover {
+  background: var(--color-border);
+}
+
+.call-control-btn[aria-pressed="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.call-control-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.call-control-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.call-control--hangup .call-control-btn {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #fff;
+}
+
+.call-control--hangup .call-control-btn:hover {
+  filter: brightness(1.1);
+}
+
+.call-control--answer .call-control-btn {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #fff;
+}
+
+.call-control--answer .call-control-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* Incoming call alert ----------------------------------------------------- */
+
+.incoming-call-alert {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 340px;
+  padding: var(--space-4);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-toast);
+  animation: toast-in var(--duration-base) var(--ease);
+}
+
+.incoming-call-alert .call-controls {
+  margin-top: var(--space-4);
+  gap: var(--space-6);
+}
+
+/* DTMF mini pad ----------------------------------------------------------- */
+
+.dtmf-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.dtmf-pad button {
+  height: 44px;
+  border-radius: 10px;
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.dtmf-pad button:hover {
+  background: var(--color-border);
+}
+
+/* Recents list in context panel ------------------------------------------- */
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  color: inherit;
+}
+
+.recent-item:hover {
+  background: var(--color-surface-secondary);
+}
+
+.recent-item-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-item-name {
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.recent-item-number {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.recent-item-time {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CloudTel</title>
+    <meta name="description" content="CloudTel — business softphone by Re-EL Branding & Technologies." />
+    <meta name="theme-color" content="#38BDF8" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/assets/img/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/assets/manifest.webmanifest" />
+    <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/css/tokens.css" />
+    <link rel="stylesheet" href="/assets/css/reset.css" />
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/css/themes.css" />
+    <link rel="stylesheet" href="/assets/css/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+    <link rel="stylesheet" href="/assets/css/dialer.css" />
+    <link rel="stylesheet" href="/assets/css/responsive.css" />
+    <script type="module">
+      import { initTheme } from "/assets/js/core/preferences.js";
+      initTheme();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#dialer">Skip to dialer</a>
+    <div class="app">
+      <div class="sidebar-backdrop"></div>
+      <aside class="app-sidebar">
+        <div class="app-brand">
+          <img src="/assets/img/logo.svg" alt="" />
+          <div class="app-brand-name">Cloud<span>Tel</span></div>
+        </div>
+        <nav class="app-nav" aria-label="Primary"></nav>
+        <div class="app-sidebar-footer"></div>
+      </aside>
+
+      <header class="app-header">
+        <button type="button" class="header-icon-btn nav-toggle" aria-label="Open navigation" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="input-group header-search">
+          <span class="input-group-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input class="input header-search-input" type="search" placeholder="Search contacts…" aria-label="Search contacts" />
+        </div>
+        <div class="grow"></div>
+        <button type="button" class="header-icon-btn header-help" aria-label="Help">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+        <button type="button" class="header-icon-btn header-notifications" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="badge-dot" data-badge="voicemail" hidden></span>
+        </button>
+        <button type="button" class="header-user-btn">
+          <span class="header-user-avatar"></span>
+          <span class="header-user-name">Account</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </header>
+
+      <main class="app-main">
+        <div class="page" id="dialer">
+          <div class="dialer-layout">
+            <div class="dialer-main">
+              <div class="registration-banner is-unregistered" data-registration-banner aria-live="polite">
+                <span class="status-dot"></span><span>Not registered</span>
+              </div>
+
+              <div data-keypad-wrap>
+                <div class="dial-display">
+                  <input class="dial-number-input" data-dial-input type="tel" inputmode="tel" placeholder="Enter a number" aria-label="Enter a number to dial" />
+                  <div class="dial-match" data-dial-match aria-live="polite"></div>
+                </div>
+
+                <div class="keypad" data-keypad role="group" aria-label="Keypad"></div>
+
+                <div class="dial-actions">
+                  <button type="button" class="dial-side-btn" data-dial-backspace aria-label="Delete last digit">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                  </button>
+                  <button type="button" class="dial-call-btn" data-dial-call aria-label="Call">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </button>
+                  <button type="button" class="dial-side-btn" data-dial-clear aria-label="Clear number">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div data-active-call hidden></div>
+            </div>
+
+            <aside class="context-panel">
+              <div class="context-panel-header">
+                <h2 class="card-title">Recents</h2>
+              </div>
+              <div data-recents></div>
+            </aside>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-statusbar" role="status"></footer>
+    </div>
+
+    <div class="toast-region" role="region" aria-label="Notifications" aria-live="polite"></div>
+
+    <script type="module" src="/assets/js/pages/dialer.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => navigator.serviceWorker.register("/assets/sw.js").catch(() => {}));
+      }
+    </script>
+  </body>
+</html>

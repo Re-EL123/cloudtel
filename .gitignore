@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel/
+.vercelignore
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+.playwright/
+
+# Build artefacts
+dist/
+build/
+
+# Never commit production secrets or PBX credentials
+telephony/asterisk/*.conf
+!telephony/asterisk/*.conf.example
+*.pem
+*.key
+!tests/fixtures/**

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CloudTel">
+  <defs>
+    <linearGradient id="ct-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#ct-grad)"/>
+  <!-- signal arcs -->
+  <path d="M44 76a24 24 0 0 1 24-24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+  <path d="M44 90a38 38 0 0 1 38-38" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity="0.3"/>
+  <!-- handset -->
+  <path d="M46 52c-6 4-9 10-8 17 2 14 15 28 29 30 7 1 13-2 17-8l-12-9c-2 3-5 5-9 4-7-1-14-8-15-15-1-4 1-7 4-9l-6-10z" fill="#fff"/>
+</svg>

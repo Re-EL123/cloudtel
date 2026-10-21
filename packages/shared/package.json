@@ -1,0 +1,20 @@
+{
+  "name": "@cloudtel/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared domain constants, roles, permissions, call-state and validation rules for CloudTel",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./constants.js": "./src/constants.js",
+    "./roles.js": "./src/roles.js",
+    "./permissions.js": "./src/permissions.js",
+    "./call-status.js": "./src/call-status.js",
+    "./validation-rules.js": "./src/validation-rules.js",
+    "./api-contracts.js": "./src/api-contracts.js"
+  },
+  "scripts": {
+    "lint": "eslint src"
+  }
+}

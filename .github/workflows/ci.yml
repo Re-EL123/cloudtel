@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    name: Build, lint & unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync shared packages into the web app
+        run: npm run build
+
+      - name: Enforce the 12-function ceiling
+        run: npm run check:functions
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:unit
+
+  integration:
+    name: Integration & tenant security tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cloudtel
+          POSTGRES_PASSWORD: cloudtel
+          POSTGRES_DB: cloudtel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cloudtel"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgres://cloudtel:cloudtel@localhost:5432/cloudtel_test
+      PG_SSL: disable
+      NODE_ENV: test
+      SESSION_TTL_HOURS: "12"
+      TELEPHONY_WEBHOOK_SECRET: test-telephony-secret
+      BILLING_WEBHOOK_SECRET: test-billing-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync shared packages
+        run: npm run build
+
+      - name: Apply migrations
+        run: npm run db:migrate
+
+      - name: Seed development data
+        run: npm run db:seed
+
+      - name: API integration tests
+        run: npm run test:integration
+
+      - name: Tenant security tests
+        run: npm run test:security
+
+  telephony:
+    name: ARI bridge tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: ARI bridge unit tests
+        working-directory: telephony/ari-bridge
+        run: node --test test/*.test.js

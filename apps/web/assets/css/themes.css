@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Theme utilities. Colour tokens live in tokens.css.
+   ========================================================================== */
+
+/* Avoid a flash of transition when the theme first applies. */
+.theme-ready *,
+.theme-ready *::before,
+.theme-ready *::after {
+  transition: background-color var(--duration-base) var(--ease),
+    border-color var(--duration-base) var(--ease), color var(--duration-base) var(--ease);
+}
+
+/* Windows high-contrast mode: let the OS win. */
+@media (forced-colors: active) {
+  .btn,
+  .card,
+  .input,
+  .menu,
+  .dialog,
+  .toast {
+    border: 1px solid ButtonBorder;
+  }
+
+  .status-dot,
+  .badge {
+    forced-color-adjust: none;
+  }
+}

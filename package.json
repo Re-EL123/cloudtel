@@ -1,0 +1,40 @@
+{
+  "name": "cloudtel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CloudTel - browser-based VoIP softphone and business communications platform by Re-EL Branding & Technologies",
+  "workspaces": [
+    "apps/api",
+    "packages/shared",
+    "packages/ui",
+    "packages/config"
+  ],
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "dev:api": "vercel dev --dir apps/api --listen 3001",
+    "dev:web": "node scripts/serve-web.mjs",
+    "build": "node scripts/sync-shared.mjs",
+    "test": "bash scripts/test.sh",
+    "test:unit": "node --test \"tests/unit/*.test.js\"",
+    "test:integration": "node --test \"tests/api/*.test.js\"",
+    "test:security": "node --test \"tests/security/*.test.js\"",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{js,json,css,md,html}\"",
+    "format:check": "prettier --check \"**/*.{js,json,css,md,html}\"",
+    "validate": "bash scripts/validate.sh",
+    "check:functions": "node scripts/check-functions.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "generate:icons": "node scripts/generate-icons.mjs",
+    "generate:pages": "node scripts/generate-pages.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "sharp": "^0.35.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

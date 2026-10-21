@@ -1,0 +1,20 @@
+{
+  "name": "@cloudtel/ari-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Asterisk ARI -> CloudTel telephony webhook bridge",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint src",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "ari-client": "^2.2.0",
+    "ws": "^8.18.0"
+  }
+}

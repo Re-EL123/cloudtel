@@ -1,0 +1,52 @@
+{
+  "name": "CloudTel",
+  "short_name": "CloudTel",
+  "description": "CloudTel — business softphone by Re-EL Branding & Technologies.",
+  "id": "/dialer.html",
+  "start_url": "/dialer.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F8FAFC",
+  "theme_color": "#38BDF8",
+  "icons": [
+    {
+      "src": "/assets/img/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dialer",
+      "url": "/dialer.html",
+      "icons": [{ "src": "/assets/img/logo.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Contacts",
+      "url": "/contacts.html",
+      "icons": [{ "src": "/assets/img/logo.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Call history",
+      "url": "/history.html",
+      "icons": [{ "src": "/assets/img/logo.svg", "sizes": "any" }]
+    }
+  ]
+}

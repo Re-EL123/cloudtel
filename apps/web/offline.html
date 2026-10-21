@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Offline · CloudTel</title>
+    <meta name="theme-color" content="#38BDF8" />
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/css/tokens.css" />
+    <link rel="stylesheet" href="/assets/css/reset.css" />
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/css/themes.css" />
+    <link rel="stylesheet" href="/assets/css/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+  </head>
+  <body>
+    <main class="standalone">
+      <div class="card" style="max-width:440px;padding:32px;text-align:center">
+        <img src="/assets/img/logo.svg" alt="" style="width:56px;height:56px;margin:0 auto 16px" />
+        <h1 style="font-size:1.5rem;margin-bottom:8px">You are offline</h1>
+        <p class="text-secondary" style="margin-bottom:20px">
+          CloudTel needs a connection to place and receive calls. Your cached
+          screens are still available; calls will resume once you reconnect.
+        </p>
+        <button type="button" class="btn btn--primary" onclick="location.reload()">Try again</button>
+      </div>
+    </main>
+  </body>
+</html>

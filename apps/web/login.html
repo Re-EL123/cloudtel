@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sign in · CloudTel</title>
+    <meta name="description" content="Sign in to CloudTel — business softphone by Re-EL Branding & Technologies." />
+    <meta name="theme-color" content="#38BDF8" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/assets/img/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/assets/manifest.webmanifest" />
+    <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/css/tokens.css" />
+    <link rel="stylesheet" href="/assets/css/reset.css" />
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/css/themes.css" />
+    <link rel="stylesheet" href="/assets/css/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+    <link rel="stylesheet" href="/assets/css/responsive.css" />
+    <style>
+      .auth-card { width: min(420px, 100%); }
+      .auth-head { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6) var(--space-4); text-align: center; }
+      .auth-logo { width: 64px; height: 64px; }
+      .auth-title { font-size: var(--text-page); font-weight: var(--weight-bold); }
+      .auth-subtitle { color: var(--color-text-muted); font-size: var(--text-base); }
+      .auth-body { padding: var(--space-4) var(--space-6) var(--space-6); }
+      .auth-footer { padding: var(--space-4) var(--space-6); text-align: center; font-size: var(--text-xs); color: var(--color-text-muted); border-top: 1px solid var(--color-border); }
+      .auth-alert { margin-bottom: var(--space-4); }
+      .auth-form { display: flex; flex-direction: column; gap: var(--space-4); }
+      .auth-row { display: flex; justify-content: flex-end; }
+      .brand-canvas {
+        position: fixed; inset: 0; z-index: -1;
+        background:
+          radial-gradient(1200px 600px at 100% -10%, var(--color-primary-pale), transparent 60%),
+          radial-gradient(900px 500px at -10% 110%, var(--color-primary-light), transparent 55%),
+          var(--color-bg);
+      }
+    </style>
+    <script type="module">
+      import { initTheme } from "/assets/js/core/preferences.js";
+      initTheme();
+    </script>
+  </head>
+  <body>
+    <div class="brand-canvas"></div>
+    <main class="standalone">
+      <div class="card auth-card">
+        <div class="auth-head">
+          <img class="auth-logo" src="/assets/img/logo.svg" alt="CloudTel logo" />
+          <h1 class="auth-title">Welcome to CloudTel</h1>
+          <p class="auth-subtitle">Sign in to start calling</p>
+        </div>
+        <div class="auth-body">
+          <div class="auth-alert" role="alert" aria-live="assertive" hidden data-auth-alert></div>
+          <form class="auth-form" data-login-form novalidate>
+            <div data-field-email></div>
+            <div data-field-password></div>
+            <div data-field-organisation class="hidden"></div>
+            <div class="auth-row">
+              <button type="button" class="btn btn--ghost btn--sm" data-forgot-password>Forgot password?</button>
+            </div>
+            <button type="submit" class="btn btn--primary btn--lg btn--block" data-login-submit>
+              <span>Sign in</span>
+            </button>
+          </form>
+        </div>
+        <div class="auth-footer">
+          CloudTel · By Re-EL Branding &amp; Technologies
+        </div>
+      </div>
+    </main>
+    <div class="toast-region" role="region" aria-label="Notifications" aria-live="polite"></div>
+    <script type="module" src="/assets/js/pages/login.js"></script>
+  </body>
+</html>

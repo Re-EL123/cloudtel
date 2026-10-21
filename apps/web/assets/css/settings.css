@@ -1,0 +1,259 @@
+/* ==========================================================================
+   Settings and account surfaces.
+   ========================================================================== */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 680px);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  position: sticky;
+  top: 0;
+}
+
+.settings-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-button);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.settings-nav-link:hover {
+  background: var(--color-surface-secondary);
+  color: var(--color-text);
+}
+
+.settings-nav-link.is-active {
+  background: var(--color-primary-light);
+  color: var(--color-primary-deep);
+}
+
+[data-theme="dark"] .settings-nav-link.is-active {
+  color: var(--color-primary);
+}
+
+.settings-section {
+  margin-bottom: var(--space-6);
+}
+
+.settings-section-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+.settings-section-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.device-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.device-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-secondary);
+  text-align: center;
+}
+
+.device-preview svg {
+  width: 28px;
+  height: 28px;
+  color: var(--color-text-muted);
+}
+
+.device-preview-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.device-preview-kind {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* Theme picker ------------------------------------------------------------ */
+
+.theme-picker {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  min-width: 120px;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.theme-option:hover {
+  border-color: var(--color-border-strong);
+}
+
+.theme-option.is-selected {
+  border-color: var(--color-primary);
+}
+
+.theme-swatch {
+  width: 88px;
+  height: 54px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+}
+
+.theme-swatch-sidebar {
+  background: var(--color-surface-secondary);
+}
+
+.theme-swatch-body {
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+}
+
+.theme-swatch-line {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-border);
+}
+
+.theme-swatch-line.is-accent {
+  background: var(--color-primary);
+  width: 60%;
+}
+
+.theme-swatch--dark .theme-swatch-sidebar {
+  background: #0b1220;
+}
+
+.theme-swatch--dark .theme-swatch-body {
+  background: #111827;
+}
+
+.theme-swatch--dark .theme-swatch-line {
+  background: #334155;
+}
+
+.theme-swatch--dark .theme-swatch-line.is-accent {
+  background: #38bdf8;
+}
+
+.theme-swatch--system .theme-swatch-body {
+  background: linear-gradient(135deg, #f8fafc 50%, #111827 50%);
+}
+
+.theme-option-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+/* Plan / billing cards ---------------------------------------------------- */
+
+.plan-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.plan-card.is-current {
+  border-color: var(--color-primary);
+}
+
+.plan-name {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  text-transform: capitalize;
+}
+
+.plan-limits {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.usage-meter {
+  margin-top: var(--space-3);
+}
+
+.usage-meter-bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-secondary);
+  overflow: hidden;
+}
+
+.usage-meter-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  transition: width var(--duration-slow) var(--ease);
+}
+
+.usage-meter-fill.is-warning {
+  background: var(--color-warning);
+}
+
+.usage-meter-fill.is-danger {
+  background: var(--color-danger);
+}
+
+.usage-meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}

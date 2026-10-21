@@ -1,0 +1,87 @@
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "packages/**"
+      - "scripts/sync-shared.mjs"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build static frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync shared packages into the web app
+        run: npm run build
+
+      - name: Inject runtime API configuration
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          PUBLIC_SIP_DOMAIN: ${{ vars.PUBLIC_SIP_DOMAIN }}
+          PUBLIC_SIP_WSS_URL: ${{ vars.PUBLIC_SIP_WSS_URL }}
+          PUBLIC_VOICEMAIL_CODE: ${{ vars.PUBLIC_VOICEMAIL_CODE }}
+          PUBLIC_EXTERNAL_CALLING: ${{ vars.PUBLIC_EXTERNAL_CALLING }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const path = "apps/web/config.json";
+            const cfg = JSON.parse(fs.readFileSync(path, "utf8"));
+            const need = (k) => {
+              if (!process.env[k]) { console.error(`Missing required repo variable ${k}`); process.exit(1); }
+              return process.env[k];
+            };
+            cfg.apiBaseUrl = need("API_BASE_URL").replace(/\/+$/, "");
+            cfg.environment = "production";
+            cfg.publicTelephony = {
+              sipDomain: process.env.PUBLIC_SIP_DOMAIN || "",
+              wssUrl: process.env.PUBLIC_SIP_WSS_URL || "",
+              transport: "WSS",
+              voicemailCode: process.env.PUBLIC_VOICEMAIL_CODE || "*97",
+              externalCallingEnabled: String(process.env.PUBLIC_EXTERNAL_CALLING || "false") === "true",
+            };
+            fs.writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
+            console.log("config.json ->", cfg.apiBaseUrl);
+          '
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

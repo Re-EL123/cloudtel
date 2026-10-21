@@ -1,0 +1,18 @@
+{
+  "name": "@cloudtel/ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reusable UI primitives (buttons, inputs, dialogs, notifications) for CloudTel",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./buttons.js": "./src/buttons.js",
+    "./inputs.js": "./src/inputs.js",
+    "./dialogs.js": "./src/dialogs.js",
+    "./notifications.js": "./src/notifications.js"
+  },
+  "scripts": {
+    "lint": "eslint src"
+  }
+}
