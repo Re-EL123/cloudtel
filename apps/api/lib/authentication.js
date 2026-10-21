@@ -73,20 +73,33 @@ function secureFlag() {
   return process.env.NODE_ENV === "production" ? "; Secure" : "";
 }
 
+/**
+ * Cookie SameSite policy. Defaults to "Lax" (same-site deployments). When the
+ * frontend is hosted on a different site (e.g. GitHub Pages at
+ * cloudtel.re-el.co.za calling an API served from *.vercel.app), the browser
+ * needs SameSite=None (with Secure) for the session cookie to be sent.
+ */
+function sameSiteFlag() {
+  const value = (process.env.SESSION_COOKIE_SAMESITE || "Lax").trim();
+  const policy = value === "None" || value === "Strict" ? value : "Lax";
+  // SameSite=None is only valid with the Secure flag; enforce it in all envs.
+  return policy === "None" ? "; SameSite=None" : `; SameSite=${policy}`;
+}
+
 export function sessionCookie(token, maxAgeSeconds) {
-  return `${SESSION.COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax${secureFlag()}; Max-Age=${maxAgeSeconds}`;
+  return `${SESSION.COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly${sameSiteFlag()}${secureFlag()}; Max-Age=${maxAgeSeconds}`;
 }
 
 export function csrfCookie(token, maxAgeSeconds) {
   // Readable by JavaScript on purpose: the SPA echoes it back in the
   // X-CSRF-Token header (double-submit pattern).
-  return `${SESSION.CSRF_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; SameSite=Lax${secureFlag()}; Max-Age=${maxAgeSeconds}`;
+  return `${SESSION.CSRF_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/${sameSiteFlag()}${secureFlag()}; Max-Age=${maxAgeSeconds}`;
 }
 
 export function clearSessionCookies() {
   return [
-    `${SESSION.COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax${secureFlag()}; Max-Age=0`,
-    `${SESSION.CSRF_COOKIE_NAME}=; Path=/; SameSite=Lax${secureFlag()}; Max-Age=0`,
+    `${SESSION.COOKIE_NAME}=; Path=/; HttpOnly${sameSiteFlag()}${secureFlag()}; Max-Age=0`,
+    `${SESSION.CSRF_COOKIE_NAME}=; Path=/${sameSiteFlag()}${secureFlag()}; Max-Age=0`,
   ];
 }
 
