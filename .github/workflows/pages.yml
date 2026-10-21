@@ -49,18 +49,18 @@ jobs:
             const fs = require("fs");
             const path = "apps/web/config.json";
             const cfg = JSON.parse(fs.readFileSync(path, "utf8"));
-            const need = (k) => {
-              if (!process.env[k]) { console.error(`Missing required repo variable ${k}`); process.exit(1); }
-              return process.env[k];
-            };
-            cfg.apiBaseUrl = need("API_BASE_URL").replace(/\/+$/, "");
+            if (process.env.API_BASE_URL && process.env.API_BASE_URL.trim()) {
+              cfg.apiBaseUrl = process.env.API_BASE_URL.trim().replace(/\/+$/, "");
+            } else {
+              console.log("No API_BASE_URL repo variable set, keeping", cfg.apiBaseUrl);
+            }
             cfg.environment = "production";
             cfg.publicTelephony = {
-              sipDomain: process.env.PUBLIC_SIP_DOMAIN || "",
-              wssUrl: process.env.PUBLIC_SIP_WSS_URL || "",
+              sipDomain: process.env.PUBLIC_SIP_DOMAIN || cfg.publicTelephony?.sipDomain || "",
+              wssUrl: process.env.PUBLIC_SIP_WSS_URL || cfg.publicTelephony?.wssUrl || "",
               transport: "WSS",
-              voicemailCode: process.env.PUBLIC_VOICEMAIL_CODE || "*97",
-              externalCallingEnabled: String(process.env.PUBLIC_EXTERNAL_CALLING || "false") === "true",
+              voicemailCode: process.env.PUBLIC_VOICEMAIL_CODE || cfg.publicTelephony?.voicemailCode || "*97",
+              externalCallingEnabled: String(process.env.PUBLIC_EXTERNAL_CALLING || cfg.publicTelephony?.externalCallingEnabled || "false") === "true",
             };
             fs.writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
             console.log("config.json ->", cfg.apiBaseUrl);
