@@ -25,6 +25,7 @@ import {
   registerLoginFailure,
   revokeAllUserSessions,
   revokeSession,
+  rotateCsrfToken,
   sessionCookie,
   csrfCookie,
   setCookieHeaders,
@@ -36,6 +37,11 @@ import { consumeRateLimit, rateLimitKey } from "../../../lib/rate-limit.js";
 import { RATE_LIMITS } from "@cloudtel/shared";
 import { audit } from "../../../lib/audit.js";
 import { requireString, optionalString } from "../../../lib/validation.js";
+
+function sessionMaxAgeSeconds(session) {
+  if (!session?.expiresAt) return 12 * 60 * 60;
+  return Math.max(1, Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000));
+}
 
 async function sessionPayload(context) {
   const memberships = await listUserMemberships(context.user.id);
@@ -225,10 +231,12 @@ const routes = [
     auth: "session",
     handle: async (ctx) => {
       const payload = await sessionPayload(ctx);
-      // Include the CSRF token in the body so cross-origin frontends (whose JS
-      // cannot read a cookie scoped to the API origin) can echo it back in the
-      // x-csrf-token header.
-      success(ctx.res, { ...payload, csrfToken: ctx.session.csrfToken }, { requestId: ctx.requestId });
+      // Cross-origin frontends cannot read the API-origin CSRF cookie, so the
+      // token is also returned in the body (and the cookie refreshed for
+      // same-origin clients).
+      const csrfToken = await rotateCsrfToken(ctx.session.id);
+      setCookieHeaders(ctx.res, csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session)));
+      success(ctx.res, { ...payload, csrfToken }, { requestId: ctx.requestId });
     },
   },
 
@@ -240,7 +248,9 @@ const routes = [
       // Sliding-window refresh: touch the session then return a fresh payload.
       if (ctx.session?.id) await touchSession(ctx.session.id);
       const payload = await sessionPayload(ctx);
-      success(ctx.res, { ...payload, csrfToken: ctx.session.csrfToken }, { requestId: ctx.requestId });
+      const csrfToken = await rotateCsrfToken(ctx.session.id);
+      setCookieHeaders(ctx.res, csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session)));
+      success(ctx.res, { ...payload, csrfToken }, { requestId: ctx.requestId });
     },
   },
 

@@ -182,6 +182,17 @@ export async function touchSession(sessionId) {
   await query(`UPDATE sessions SET last_seen_at = now() WHERE id = $1`, [sessionId]);
 }
 
+/**
+ * Issue a fresh CSRF token for an existing session and persist its hash.
+ * Cross-origin frontends cannot read the CSRF cookie (it belongs to the API
+ * origin), so session/refresh responses return this token in the JSON body.
+ */
+export async function rotateCsrfToken(sessionId) {
+  const csrfToken = generateToken(24);
+  await query(`UPDATE sessions SET csrf_hash = $2 WHERE id = $1`, [sessionId, hashToken(csrfToken)]);
+  return csrfToken;
+}
+
 export async function setSessionOrganisation(sessionId, organisationId, role) {
   await query(`UPDATE sessions SET organisation_id = $2 WHERE id = $1`, [sessionId, organisationId]);
   return role;
