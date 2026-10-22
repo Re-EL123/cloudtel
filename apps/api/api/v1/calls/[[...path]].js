@@ -21,7 +21,7 @@ import {
   isValidId,
   parsePagination,
 } from "@cloudtel/shared";
-import { success, created, ApiError } from "../../../lib/response.js";
+import { success, created, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import { PERMISSIONS, contextCan, requireOrganisation } from "../../../lib/authorisation.js";
@@ -594,4 +594,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

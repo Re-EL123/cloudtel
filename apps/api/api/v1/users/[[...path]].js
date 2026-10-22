@@ -13,7 +13,7 @@
  * DELETE /api/v1/users/:id
  */
 import { MEMBER_ROLES, USER_STATUSES, validateEmail, validateName, validatePassword } from "@cloudtel/shared";
-import { success, created, noContent, ApiError } from "../../../lib/response.js";
+import { success, created, noContent, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import { hashPassword, listUserSessions, revokeAllUserSessions, revokeSessionById } from "../../../lib/authentication.js";
@@ -578,4 +578,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

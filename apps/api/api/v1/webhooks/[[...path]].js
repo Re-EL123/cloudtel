@@ -13,7 +13,7 @@ import {
   deriveDisposition,
   isValidId,
 } from "@cloudtel/shared";
-import { accepted, ApiError } from "../../../lib/response.js";
+import { accepted, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query, withTransaction } from "../../../lib/database.js";
 import { audit } from "../../../lib/audit.js";
@@ -399,4 +399,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

@@ -11,9 +11,21 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/v1/health",
+      "destination": "/api/v1/health/[[...path]]"
     }
   ]
 }

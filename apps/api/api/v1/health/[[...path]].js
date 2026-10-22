@@ -6,7 +6,7 @@
  * The public endpoint reveals only minimal information. Dependency checks
  * require an authenticated session (§9.2 function 12).
  */
-import { success, ApiError } from "../../../lib/response.js";
+import { success, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { pingDb, query } from "../../../lib/database.js";
 import { PERMISSIONS, contextCan } from "../../../lib/authorisation.js";
@@ -60,4 +60,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

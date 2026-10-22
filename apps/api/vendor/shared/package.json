@@ -1,0 +1,11 @@
+{
+  "name": "@cloudtel/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generated vendored copy of packages/shared — do not edit; run `npm run build` at the repo root (see AGENTS.md §3)",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  }
+}

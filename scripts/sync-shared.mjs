@@ -15,6 +15,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pairs = [
   ["packages/shared/src", "apps/web/assets/js/shared"],
   ["packages/ui/src", "apps/web/assets/js/ui"],
+  // Vendored copy for the API: Vercel installs apps/api dependencies in an
+  // isolated root, so the workspace package must physically exist inside it
+  // (referenced from apps/api/package.json as "file:./vendor/shared").
+  ["packages/shared/src", "apps/api/vendor/shared/src"],
 ];
 
 for (const [from, to] of pairs) {

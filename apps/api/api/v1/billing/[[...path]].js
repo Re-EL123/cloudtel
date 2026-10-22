@@ -8,7 +8,7 @@
  * Billing remains disabled until a provider is configured. The browser can
  * never assert usage amounts or subscription status (§9.2 function 11).
  */
-import { success, ApiError } from "../../../lib/response.js";
+import { success, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import { PERMISSIONS, requireOrganisation } from "../../../lib/authorisation.js";
@@ -147,4 +147,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

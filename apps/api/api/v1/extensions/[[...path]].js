@@ -16,7 +16,7 @@
  */
 import { PROVISIONING_STATES, EXTENSION_STATUSES } from "@cloudtel/shared";
 import { isValidId, validateExtensionNumber, validateName, parsePagination } from "@cloudtel/shared";
-import { success, created, accepted, noContent, ApiError } from "../../../lib/response.js";
+import { success, created, accepted, noContent, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import { PERMISSIONS, requireOrganisation, contextCan } from "../../../lib/authorisation.js";
@@ -492,4 +492,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

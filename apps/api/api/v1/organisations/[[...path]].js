@@ -12,7 +12,7 @@
  * PATCH /api/v1/organisations/:id/members/:userId
  * DELETE /api/v1/organisations/:id/members/:userId
  */
-import { success, created, noContent, ApiError } from "../../../lib/response.js";
+import { success, created, noContent, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query, withTransaction } from "../../../lib/database.js";
 import { setSessionOrganisation, revokeAllUserSessions } from "../../../lib/authentication.js";
@@ -453,4 +453,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

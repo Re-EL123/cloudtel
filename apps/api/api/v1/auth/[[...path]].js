@@ -10,7 +10,7 @@
  * POST   /api/v1/auth/password/change
  */
 import { permissionsForRole, validateEmail, validatePassword } from "@cloudtel/shared";
-import { success, ApiError } from "../../../lib/response.js";
+import { success, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import {
@@ -363,4 +363,4 @@ async function deliverPasswordResetEmail(email, token) {
   console.log("password-reset link generated", { email, link });
 }
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

@@ -15,7 +15,7 @@
  * PBX-backed operations (§9.2 function 7).
  */
 import { isValidId, dialableTarget } from "@cloudtel/shared";
-import { success, ApiError } from "../../../lib/response.js";
+import { success, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import { PERMISSIONS, contextCan, requireOrganisation } from "../../../lib/authorisation.js";
@@ -275,4 +275,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

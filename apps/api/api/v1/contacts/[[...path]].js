@@ -15,7 +15,7 @@
  * member (spec §4.6).
  */
 import { CONTACT_SCOPES, isValidId, validateContact, normalisePhoneNumber, parsePagination } from "@cloudtel/shared";
-import { success, created, noContent, ApiError } from "../../../lib/response.js";
+import { success, created, noContent, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
 import { query } from "../../../lib/database.js";
 import {
@@ -398,4 +398,4 @@ const routes = [
   },
 ];
 
-export default createHandler(routes);
+export default handler(createHandler(routes));

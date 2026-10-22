@@ -10,7 +10,7 @@
     "dev": "vercel dev --listen 3001"
   },
   "dependencies": {
-    "@cloudtel/shared": "*",
+    "@cloudtel/shared": "file:./vendor/shared",
     "pg": "^8.13.1"
   }
 }
