@@ -235,7 +235,7 @@ const routes = [
       // token is also returned in the body (and the cookie refreshed for
       // same-origin clients).
       const csrfToken = await rotateCsrfToken(ctx.session.id);
-      setCookieHeaders(ctx.res, csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session)));
+      setCookieHeaders(ctx.res, [csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session))]);
       success(ctx.res, { ...payload, csrfToken }, { requestId: ctx.requestId });
     },
   },
@@ -249,7 +249,7 @@ const routes = [
       if (ctx.session?.id) await touchSession(ctx.session.id);
       const payload = await sessionPayload(ctx);
       const csrfToken = await rotateCsrfToken(ctx.session.id);
-      setCookieHeaders(ctx.res, csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session)));
+      setCookieHeaders(ctx.res, [csrfCookie(csrfToken, sessionMaxAgeSeconds(ctx.session))]);
       success(ctx.res, { ...payload, csrfToken }, { requestId: ctx.requestId });
     },
   },
