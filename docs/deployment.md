@@ -105,3 +105,15 @@ report DB connectivity and applied migration count. Point uptime monitoring at
 Serverless deploys are immutable — promote the previous deployment in Vercel.
 Migrations are forward-only; prefer additive changes and a follow-up migration
 over destructive rollbacks (see [disaster-recovery.md](./disaster-recovery.md)).
+
+## Telephony (Asterisk + ARI)
+
+Real calls are served by a self-hosted Asterisk stack (see
+`telephony/deploy/README.md`): Asterisk 20 with a PJSIP WebSocket transport, an
+ARI bridge that routes internal calls and posts lifecycle webhooks, and a
+loopback-only PBX admin API used by the CloudTel API to provision extensions.
+
+- The SPA registers with `wss://<SIP_DOMAIN>/ws` (TLS terminated by nginx).
+- `GET /settings/telephony` lazily provisions the caller's extension, pushes the
+  SIP credential to the PBX and returns it to its owner.
+- RTP uses inbound UDP 10000-20000, which must be allowed by the host firewall.

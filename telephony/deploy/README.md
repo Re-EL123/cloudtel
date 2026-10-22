@@ -4,13 +4,13 @@ This stack runs three containers on a public Docker host:
 
 | Container | Purpose | Ports |
 | --- | --- | --- |
-| `cloudtel-asterisk` | Asterisk 20 with PJSIP/WSS + ARI | `8089/tcp` (WSS), `10000-20000/udp` (RTP) |
+| `cloudtel-asterisk` | Asterisk 20 with PJSIP/WSS + ARI | `8089/tcp` (internal), `10000-20000/udp` (RTP) |
 | `cloudtel-pbx-admin` | PBX admin API (provisioning + call control) | `127.0.0.1:8090` (behind nginx) |
 | `cloudtel-ari-bridge` | ARI → CloudTel webhook bridge | outbound only |
 
 ## 1. DNS + TLS
 
-The browser must reach `wss://<SIP_DOMAIN>:8089/ws` with a valid certificate.
+The browser must reach `wss://<SIP_DOMAIN>/ws` with a valid certificate.
 Point a DNS name at the host (or use an IP-based wildcard DNS such as
 `sslip.io`), then issue a certificate:
 
@@ -38,17 +38,19 @@ $EDITOR .env         # SIP_DOMAIN, PUBLIC_IP, ARI/PBX secrets, webhook secret
 `deploy.sh` renders `asterisk/pjsip.conf` and `asterisk/ari.conf` in place
 (replacing placeholders), builds the Node services and starts the stack.
 
-## 3. Reverse proxy for the PBX admin API
+## 3. Reverse proxy (WSS + PBX admin API)
 
-The CloudTel API calls the PBX admin API server-to-server. Expose it over HTTPS
-behind the host's reverse proxy:
+Browsers connect to `wss://<SIP_DOMAIN>/ws` on 443. nginx terminates TLS and
+forwards the WebSocket to Asterisk's plain HTTP listener on `127.0.0.1:8088`.
+This avoids exposing port 8089 and works on hosts that only allow 80/443.
 
-```nginx
-location /pbx/ {
-    proxy_pass http://127.0.0.1:8090/;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-}
+Install `nginx-cloudtel.conf` (render `__SIP_HOST__` with the domain) and make
+sure `nginx.conf` includes it:
+
+```bash
+sudo sed -i '/include \/etc\/nginx\/mime.types;/a\    include /etc/nginx/cloudtel/*.conf;' /etc/nginx/nginx.conf
+sudo install -m 644 nginx-cloudtel.conf /etc/nginx/cloudtel/cloudtel.conf
+sudo nginx -t && sudo systemctl reload nginx
 ```
 
 Set the CloudTel API environment:
@@ -58,7 +60,7 @@ PBX_API_BASE_URL=https://<SIP_DOMAIN>/pbx
 PBX_API_USERNAME=...
 PBX_API_PASSWORD=...
 SIP_DOMAIN=<SIP_DOMAIN>
-SIP_WSS_URL=wss://<SIP_DOMAIN>:8089/ws
+SIP_WSS_URL=wss://<SIP_DOMAIN>/ws
 SIP_TRANSPORT=WSS
 SIP_ICE_SERVERS=[{"urls":"stun:stun.l.google.com:19302"}]
 ```
@@ -83,7 +85,11 @@ the ARI service.
   pushed to the PBX. They are returned only to the owning authenticated user.
 - The PBX admin API is bound to loopback and protected by HTTP Basic auth; the
   CloudTel API holds the only credential.
-- RTP uses UDP 10000-20000. Open those ports (and 8089/tcp) in any cloud
-  firewall.
+- **Media requires inbound UDP 10000-20000.** Open that range in the cloud
+  firewall (e.g. Hostinger hPanel → VPS → Firewall). Signalling works without
+  it, but calls will connect with no audio. TCP 8089 does not need to be open
+  when using the nginx `/ws` proxy.
+- Verify media reachability from outside the host, e.g.
+  `nc -u <host> 10000` while capturing with `tcpdump -ni any udp port 10000`.
 - A SIP trunk for external calling is not configured. Add a `[trunk]` PJSIP
   endpoint and set `EXTERNAL_CALLING_ENABLED=true` when available.

@@ -249,6 +249,7 @@ const routes = [
       const sip = publicTelephonyConfig();
       const extension = rows[0] || null;
       let password = extension?.sip_password || "";
+      let provisioned = !isPbxConfigured();
 
       // Provision the caller's own extension on demand. This keeps the PBX in
       // sync with CloudTel (the source of truth) and self-heals seeded or
@@ -264,6 +265,7 @@ const routes = [
         const payload = { ...extension, sip_password: password };
         let result = await updateExtensionOnPbx(payload, { password });
         if (!result.ok) result = await provisionExtension(payload);
+        provisioned = result.ok;
         if (result.ok) {
           await query(
             `UPDATE extensions SET pbx_endpoint_id = COALESCE(pbx_endpoint_id, $2),
@@ -272,10 +274,17 @@ const routes = [
               WHERE id = $1`,
             [extension.id, result.endpointId || String(extension.number)]
           );
+        } else {
+          await query(
+            `UPDATE extensions SET provisioning_status = 'error', provisioning_error = $2, updated_at = now() WHERE id = $1`,
+            [extension.id, String(result.error || "PBX provisioning failed").slice(0, 500)]
+          );
         }
       }
 
-      const configured = Boolean(extension && password && sip.sipDomain && sip.wssUrl);
+      const configured = Boolean(
+        extension && password && sip.sipDomain && sip.wssUrl && provisioned
+      );
       success(
         ctx.res,
         {
@@ -305,7 +314,9 @@ const routes = [
             ? null
             : rows.length === 0
               ? "No active extension is assigned to your account. Ask an administrator to assign one."
-              : "Telephony is not configured on the server yet.",
+              : provisioned
+                ? "Telephony is not configured on the server yet."
+                : "The phone system is temporarily unavailable. Try again shortly.",
         },
         { requestId: ctx.requestId }
       );
