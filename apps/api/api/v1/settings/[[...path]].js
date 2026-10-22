@@ -292,7 +292,7 @@ const routes = [
           extensionId: extension?.id || null,
           extensionNumber: extension?.number || null,
           displayName: extension?.display_name || null,
-          sipUri: extension ? `sip:${extension.number}@${sip.sipDomain}` : null,
+          sipUri: extension && sip.sipDomain ? `sip:${extension.number}@${sip.sipDomain}` : null,
           wsUrl: sip.wssUrl,
           // Returned only to the authenticated owner of this extension over
           // HTTPS so SIP.js can complete digest authentication. Never included
