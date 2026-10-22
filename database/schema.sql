@@ -82,6 +82,8 @@ CREATE TABLE extensions (
     CHECK (provisioning_status IN ('pending', 'provisioning', 'ready', 'failed', 'disabled')),
   provisioning_error text,
   pbx_endpoint_id text,
+  sip_password text NOT NULL DEFAULT '',
+  sip_password_updated_at timestamptz,
   provisioned_at timestamptz,
   max_concurrent_calls integer NOT NULL DEFAULT 2 CHECK (max_concurrent_calls BETWEEN 1 AND 20),
   allow_external boolean NOT NULL DEFAULT false,

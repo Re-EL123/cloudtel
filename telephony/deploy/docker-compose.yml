@@ -1,0 +1,68 @@
+# CloudTel telephony stack (Asterisk + ARI bridge + PBX admin API).
+# Run on a public host with ports 8089/tcp (WSS) and 10000-20000/udp (RTP) open.
+#
+# Copy .env.example to .env and fill in the secrets before `docker compose up`.
+
+services:
+  asterisk:
+    image: andrius/asterisk:20
+    container_name: cloudtel-asterisk
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./asterisk:/etc/asterisk
+      - pjsip-include:/etc/asterisk/pjsip.d
+      - ./certs:/etc/cloudtel-certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "asterisk -rx 'core show uptime' >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  pbx-admin:
+    build:
+      context: ../pbx-admin
+    container_name: cloudtel-pbx-admin
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      PORT: 8090
+      BIND_ADDRESS: 127.0.0.1
+      ARI_URL: http://127.0.0.1:8088
+      ARI_USERNAME: ${ARI_USERNAME}
+      ARI_PASSWORD: ${ARI_PASSWORD}
+      PBX_API_USERNAME: ${PBX_API_USERNAME}
+      PBX_API_PASSWORD: ${PBX_API_PASSWORD}
+      PJSIP_INCLUDE_DIR: /etc/asterisk/pjsip.d
+      PJSIP_INCLUDE_FILE: cloudtel.conf
+      PJSIP_CONTEXT: cloudtel-internal
+      STATE_FILE: /var/lib/cloudtel-pbx/extensions.json
+      SIP_DOMAIN: ${SIP_DOMAIN}
+    volumes:
+      - pjsip-include:/etc/asterisk/pjsip.d
+      - pbx-state:/var/lib/cloudtel-pbx
+    depends_on:
+      - asterisk
+
+  ari-bridge:
+    build:
+      context: ../ari-bridge
+    container_name: cloudtel-ari-bridge
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      ARI_URL: http://127.0.0.1:8088
+      ARI_USERNAME: ${ARI_USERNAME}
+      ARI_PASSWORD: ${ARI_PASSWORD}
+      ARI_STASIS_APP: cloudtel
+      CLOUDTEL_WEBHOOK_URL: ${CLOUDTEL_WEBHOOK_URL}
+      TELEPHONY_WEBHOOK_SECRET: ${TELEPHONY_WEBHOOK_SECRET}
+      CLOUDTEL_ORGANISATION_ID: ${CLOUDTEL_ORGANISATION_ID:-}
+      WEBHOOK_TIMEOUT_MS: 5000
+      WEBHOOK_MAX_RETRIES: 5
+    depends_on:
+      - asterisk
+
+volumes:
+  pjsip-include:
+  pbx-state:

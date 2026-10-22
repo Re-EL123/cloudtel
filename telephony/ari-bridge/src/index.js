@@ -14,6 +14,7 @@
 import { translateAriEvent } from "./translate.js";
 import { createWebhookDeliverer } from "./deliver.js";
 import { loadConfig } from "./config.js";
+import { attachCallRouting } from "./bridge-calls.js";
 
 const LEGACY_EVENTS = ["EndpointStateChange", "ChannelStateChange", "ChannelDestroyed"];
 
@@ -90,6 +91,7 @@ async function main() {
   const ari = await import("ari-client");
   const client = await ari.connect(config.ariUrl, config.ariUser, config.ariPassword);
   const bridge = attachBridge(client, { deliver, logger: console, config });
+  const routing = attachCallRouting(client, { stasisApp: config.stasisApp, logger: console });
 
   client.start(config.stasisApp);
   console.log(`[ari-bridge] connected to ${config.ariUrl}, app=${config.stasisApp}`);
@@ -97,6 +99,7 @@ async function main() {
   const shutdown = async () => {
     console.log("[ari-bridge] shutting down");
     bridge.stop();
+    routing.stop();
     try {
       await client.stop?.();
     } catch {

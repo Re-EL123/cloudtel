@@ -13,6 +13,7 @@
  * The telephony endpoint returns public identifiers only - never SIP passwords
  * or PBX credentials (§13.3).
  */
+import { randomBytes } from "node:crypto";
 import { DEFAULT_SETTINGS, THEMES, isValidId } from "@cloudtel/shared";
 import { success, ApiError, handler } from "../../../lib/response.js";
 import { createHandler } from "../../../lib/router.js";
@@ -20,7 +21,13 @@ import { query } from "../../../lib/database.js";
 import { PERMISSIONS, requireOrganisation } from "../../../lib/authorisation.js";
 import { audit } from "../../../lib/audit.js";
 import { optionalBoolean, optionalString } from "../../../lib/validation.js";
-import { publicTelephonyConfig } from "../../../lib/pbx-client.js";
+import {
+  iceServers,
+  isPbxConfigured,
+  provisionExtension,
+  publicTelephonyConfig,
+  updateExtensionOnPbx,
+} from "../../../lib/pbx-client.js";
 
 const AUDIO_KEYS = ["inputDeviceId", "outputDeviceId", "ringtone", "incomingCallSound", "dialpadTones"];
 const NOTIFICATION_KEYS = ["notificationsEnabled", "incomingCallSound", "dialpadTones", "confirmOutboundCalls", "timezone"];
@@ -230,7 +237,8 @@ const routes = [
     handle: async (ctx) => {
       const organisationId = requireOrganisation(ctx);
       const { rows } = await query(
-        `SELECT e.id, e.number, e.display_name, e.status, e.provisioning_status, e.allow_external, e.max_concurrent_calls
+        `SELECT e.id, e.number, e.display_name, e.status, e.provisioning_status, e.allow_external,
+                e.max_concurrent_calls, e.context, e.sip_password, e.pbx_endpoint_id, e.organisation_id
            FROM extensions e
           WHERE e.organisation_id = $1 AND e.user_id = $2 AND e.status = 'active'
           ORDER BY e.number
@@ -238,11 +246,51 @@ const routes = [
         [organisationId, ctx.user.id]
       );
       const preferences = await loadPreferences(ctx.user.id);
+      const sip = publicTelephonyConfig();
+      const extension = rows[0] || null;
+      let password = extension?.sip_password || "";
+
+      // Provision the caller's own extension on demand. This keeps the PBX in
+      // sync with CloudTel (the source of truth) and self-heals seeded or
+      // pre-existing extensions after a PBX deployment.
+      if (extension && isPbxConfigured()) {
+        if (!password) {
+          password = randomBytes(32).toString("base64url");
+          await query(
+            `UPDATE extensions SET sip_password = $2, sip_password_updated_at = now(), updated_at = now() WHERE id = $1`,
+            [extension.id, password]
+          );
+        }
+        const payload = { ...extension, sip_password: password };
+        let result = await updateExtensionOnPbx(payload, { password });
+        if (!result.ok) result = await provisionExtension(payload);
+        if (result.ok) {
+          await query(
+            `UPDATE extensions SET pbx_endpoint_id = COALESCE(pbx_endpoint_id, $2),
+                    provisioning_status = 'ready', provisioning_error = NULL,
+                    provisioned_at = COALESCE(provisioned_at, now()), updated_at = now()
+              WHERE id = $1`,
+            [extension.id, result.endpointId || String(extension.number)]
+          );
+        }
+      }
+
+      const configured = Boolean(extension && password && sip.sipDomain && sip.wssUrl);
       success(
         ctx.res,
         {
-          // Public identifiers only. No SIP passwords, ever.
-          sip: publicTelephonyConfig(),
+          configured,
+          extensionId: extension?.id || null,
+          extensionNumber: extension?.number || null,
+          displayName: extension?.display_name || null,
+          sipUri: extension ? `sip:${extension.number}@${sip.sipDomain}` : null,
+          wsUrl: sip.wssUrl,
+          // Returned only to the authenticated owner of this extension over
+          // HTTPS so SIP.js can complete digest authentication. Never included
+          // in organisation-wide listings.
+          password: configured ? password : null,
+          iceServers: iceServers(),
+          sip,
           extensions: rows.map((r) => ({
             id: r.id,
             number: r.number,
@@ -253,10 +301,11 @@ const routes = [
             maxConcurrentCalls: r.max_concurrent_calls,
           })),
           calling: preferences.calling || {},
-          registrationHint:
-            rows.length === 0
+          registrationHint: configured
+            ? null
+            : rows.length === 0
               ? "No active extension is assigned to your account. Ask an administrator to assign one."
-              : null,
+              : "Telephony is not configured on the server yet.",
         },
         { requestId: ctx.requestId }
       );

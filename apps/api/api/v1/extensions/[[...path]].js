@@ -14,6 +14,7 @@
  * (§12.2). Provisioning status is tracked explicitly and failures surface to
  * the administrator.
  */
+import { randomBytes } from "node:crypto";
 import { PROVISIONING_STATES, EXTENSION_STATUSES } from "@cloudtel/shared";
 import { isValidId, validateExtensionNumber, validateName, parsePagination } from "@cloudtel/shared";
 import { success, created, accepted, noContent, ApiError, handler } from "../../../lib/response.js";
@@ -252,11 +253,12 @@ const routes = [
         throw new ApiError(409, "CONFLICT", "That extension number is already in use.");
       }
 
+      const sipPassword = randomBytes(32).toString("base64url");
       const { rows } = await query(
-        `INSERT INTO extensions (organisation_id, user_id, number, display_name, max_concurrent_calls, allow_external, created_by, provisioning_status)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending')
+        `INSERT INTO extensions (organisation_id, user_id, number, display_name, max_concurrent_calls, allow_external, created_by, provisioning_status, sip_password, sip_password_updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending', $8, now())
          RETURNING *`,
-        [organisationId, userId, number, displayName, maxConcurrentCalls, allowExternal, ctx.user.id]
+        [organisationId, userId, number, displayName, maxConcurrentCalls, allowExternal, ctx.user.id, sipPassword]
       );
       const extension = rows[0];
 
@@ -437,12 +439,17 @@ const routes = [
           "Credential rotation requires a configured PBX endpoint."
         );
       }
-      // Ask the PBX to rotate the SIP secret. The new secret never leaves the
-      // server; the browser re-fetches public identifiers only (§13.3).
-      const result = await updateExtensionOnPbx(extension, { rotateCredentials: true });
+      // CloudTel generates the new secret, stores it, and pushes it to the PBX.
+      // The owner retrieves it through /settings/telephony over HTTPS.
+      const sipPassword = randomBytes(32).toString("base64url");
+      const result = await updateExtensionOnPbx(extension, { rotateCredentials: true, password: sipPassword });
       if (!result.ok) {
         throw new ApiError(502, "DEPENDENCY_UNAVAILABLE", `Rotation failed: ${result.error}`);
       }
+      await query(
+        `UPDATE extensions SET sip_password = $2, sip_password_updated_at = now(), updated_at = now() WHERE id = $1`,
+        [extension.id, sipPassword]
+      );
       await audit({
         organisationId,
         userId: ctx.user.id,

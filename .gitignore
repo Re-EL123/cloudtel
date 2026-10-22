@@ -37,3 +37,6 @@ telephony/asterisk/*.conf
 *.pem
 *.key
 !tests/fixtures/**
+.vercel
+telephony/deploy/.env
+telephony/deploy/certs/

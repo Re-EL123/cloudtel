@@ -63,6 +63,7 @@ export async function provisionExtension(extension) {
         displayName: extension.display_name,
         maxConcurrentCalls: extension.max_concurrent_calls,
         allowExternal: extension.allow_external,
+        password: extension.sip_password,
       },
     });
     return { ok: true, endpointId: data.endpointId || data.id || null };
@@ -165,4 +166,18 @@ export function publicTelephonyConfig() {
     voicemailCode: process.env.SIP_VOICEMAIL_CODE || "*97",
     externalCallingEnabled: Boolean(process.env.PBX_API_BASE_URL) && process.env.EXTERNAL_CALLING_ENABLED === "true",
   };
+}
+
+/** ICE servers for the browser. Override with SIP_ICE_SERVERS (JSON array). */
+export function iceServers() {
+  const raw = process.env.SIP_ICE_SERVERS;
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      /* fall through to the default */
+    }
+  }
+  return [{ urls: "stun:stun.l.google.com:19302" }];
 }
